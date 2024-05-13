@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useState } from "react";
+import React, { useState, useReducer } from "react";
 
 function App() {
   const [postcode, setPostcode] = useState("");
@@ -9,6 +9,8 @@ function App() {
   const [shownToday, setTodayShown] = useState(false);
   const [shownTomorrow, setShownTomorrow] = useState(false);
   const [shownNextDay, setShownNextDay] = useState(false);
+  const [state, dispatch] = useReducer(reducer, { day: "Today" });
+
   //function to store the input when user types to the postcode
   const handleChange = (event: any) => {
     // console.log(event.target.value);
@@ -127,7 +129,15 @@ function App() {
     setTodayShown(false);
     setShownNextDay(!shownNextDay);
   };
-
+  //reducer function to show the 3 days of weather on click - saves doing 100000 states...
+  function reducer(state: any, action: any) {
+    if (action.type === "Today weather") {
+      return {
+        day: state.day,
+      };
+    }
+    throw Error("Unknown action.");
+  }
   return (
     <>
       <section className="weather__header">
@@ -266,15 +276,19 @@ function App() {
         </button>
         {futureWeatherShown && (
           <>
-            <button onClick={showToday}>Today</button>
+            <button
+              onClick={() => {
+                dispatch({ type: "Today weather" });
+              }}
+            >
+              Today
+            </button>
             <button onClick={showTomorrow}>Tomorrow</button>
             <button onClick={showNextDay}>Next day</button>
-            {shownToday && (
-              <>
-                <h1>Today's weather</h1>
-                <h2>Let's see!</h2>
-              </>
-            )}
+
+            <h1>{state.day} weather</h1>
+            <h2>Let's see!</h2>
+
             {shownTomorrow && (
               <>
                 <h1>Tomorrow's weather</h1>
