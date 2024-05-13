@@ -4,7 +4,11 @@ import React, { useState } from "react";
 function App() {
   const [postcode, setPostcode] = useState("");
   const [currentWeather, setCurrentWeather] = useState(null);
-
+  const [currentWeatherShown, setCurrentWeatherShown] = useState(false);
+  const [futureWeatherShown, setFutureWeatherShown] = useState(false);
+  const [shownToday, setTodayShown] = useState(false);
+  const [shownTomorrow, setShownTomorrow] = useState(false);
+  const [shownNextDay, setShownNextDay] = useState(false);
   //function to store the input when user types to the postcode
   const handleChange = (event: any) => {
     // console.log(event.target.value);
@@ -18,39 +22,34 @@ function App() {
   let userLongitude: number = 0;
 
   let weatherCodes: { [key: string]: string } = {
-    NA: "Not available",
-    "-1": "Trace rain",
-    "0": "Clear night",
-    "1": "Sunny day",
-    "2": "Partly cloudy (night)",
-    "3": "Partly cloudy (day)",
-    "4": "Not used",
-    "5": "Mist",
-    "6": "Fog",
-    "7": "Cloudy",
-    "8": "Overcast",
-    "9": "Light rain shower (night)",
-    "10": "Light rain shower (day)",
-    "11": "Drizzle",
-    "12": "Light rain",
-    "13": "Heavy rain shower (night)",
-    "14": "Heavy rain shower (day)",
-    "15": "Heavy rain",
-    "16": "Sleet shower (night)",
-    "17": "Sleet shower (day)",
-    "18": "Sleet",
-    "19": "Hail shower (night)",
-    "20": "Hail shower (day)",
-    "21": "Hail",
-    "22": "Light snow shower (night)",
-    "23": "Light snow shower (day)",
-    "24": "Light snow",
-    "25": "Heavy snow shower (night)",
-    "26": "Heavy snow shower (day)",
-    "27": "Heavy snow",
-    "28": "Thunder shower (night)",
-    "29": "Thunder shower (day)",
-    "30": "Thunder",
+    "0": "Clear sky",
+    "1": "Mainly clear",
+    "2": "Partly cloudy",
+    "3": "Overcast",
+    "45": "Fog",
+    "48": "Depositing rime fog",
+    "51": "Drizzle: Light intensity",
+    "53": "Drizzle: Moderate intensity",
+    "55": "Drizzle: Dense intensity",
+    "56": "Freezing Drizzle: Light intensity",
+    "57": "Freezing Drizzle: Dense intensity",
+    "61": "Rain: Slight intensity",
+    "63": "Rain: Moderate intensity",
+    "65": "Rain: Heavy intensity",
+    "66": "Freezing Rain: Light intensity",
+    "67": "Freezing Rain: Heavy intensity",
+    "71": "Snow fall: Slight intensity",
+    "73": "Snow fall: Moderate intensity",
+    "75": "Snow fall: Heavy intensity",
+    "77": "Snow grains",
+    "80": "Rain showers: Slight intensity",
+    "81": "Rain showers: Moderate intensity",
+    "82": "Rain showers: Violent",
+    "85": "Snow showers: Slight",
+    "86": "Snow showers: Heavy",
+    "95": "Thunderstorm: Slight or moderate",
+    "96": "Thunderstorm with slight hail",
+    "99": "Thunderstorm with heavy hail",
   };
 
   //function to turn postcode into latitude and longitude
@@ -103,60 +102,131 @@ function App() {
     return resultWeatherCurrent;
   }
 
+  //function to show the current weather when button clicked
+  const currentWeatherShow = () => {
+    setCurrentWeatherShown(!currentWeatherShown);
+  };
+
+  const futureWeatherShow = () => {
+    setFutureWeatherShown(!futureWeatherShown);
+  };
+
+  const showToday = () => {
+    setTodayShown(!shownToday);
+    setShownTomorrow(false);
+    setShownNextDay(false);
+  };
+  const showTomorrow = () => {
+    setShownTomorrow(!shownTomorrow);
+    setTodayShown(false);
+    setShownNextDay(false);
+  };
+
+  const showNextDay = () => {
+    setShownTomorrow(false);
+    setTodayShown(false);
+    setShownNextDay(!shownNextDay);
+  };
+
   return (
     <>
       <section className="weather__header">
+        <h1>El's Weather</h1>
+        <button className="ownLocation" onClick={getCurrentLocation}>
+          Find my location
+          <svg
+            fill="currentColor"
+            width="2em"
+            height="2em"
+            focusable="false"
+            aria-hidden="true"
+            viewBox="0 0 32 32"
+          >
+            <path d="M16 31c8.5 0 15-6.5 15-15S24.5 1 16 1 1 7.5 1 16s6.5 15 15 15zm0-2.8C9.1 28.2 3.9 22.9 3.9 16S9.1 3.8 16 3.8c6.9 0 12.1 5.3 12.1 12.2S22.9 28.2 16 28.2zm-1.3.3h2.7l-.2-7.4h-2.3l-.2 7.4zM3.5 17.4l7.4-.2v-2.3l-7.4-.2v2.7zm11.4-6.6h2.3l.2-7.4h-2.7l.2 7.4zm13.7 6.6v-2.7l-7.4.2v2.3l7.4.2z"></path>
+          </svg>
+        </button>
         <form className="weather__form" onSubmit={handleSubmit}>
-          <label>Weather!</label>
           <input
             type="text"
             value={postcode}
             onChange={handleChange}
             placeholder="Enter Postcode"
           />
-          <button type="submit">Search</button>
+          <button type="submit">
+            <svg
+              fill="currentColor"
+              width="2em"
+              height="2em"
+              focusable="false"
+              aria-hidden="true"
+              viewBox="0 0 32 32"
+            >
+              <path d="M19.2 23.2c-1.9 1.1-4 1.6-6.2 1.6C6.2 24.8.9 19.5.9 12.7.9 5.7 6.1.5 13 .5c7 0 12.2 5.2 12.2 12.1 0 2.6-.8 5.1-2.3 7.1l8.4 8.4-3.6 3.6-8.5-8.5zM13 4c-4.8 0-8.5 3.7-8.5 8.6s3.7 8.6 8.5 8.6 8.5-3.7 8.5-8.6S17.8 4 13 4z"></path>
+            </svg>
+          </button>
         </form>
-        <button className="ownLocation" onClick={getCurrentLocation}>
-          Use Own Location
-        </button>
       </section>
-      <section className="weather__results">
-        <h1>Current Weather</h1>
-        {currentWeather && (
+      <section className="weather__currentlyResults">
+        <button
+          className="weather__results__button"
+          onClick={currentWeatherShow}
+        >
+          Current Weather{" "}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="#000000"
+            height="20px"
+            width="20px"
+            version="1.1"
+            id="Layer_1"
+            viewBox="0 0 330 330"
+          >
+            <path
+              id="XMLID_225_"
+              d="M325.607,79.393c-5.857-5.857-15.355-5.858-21.213,0.001l-139.39,139.393L25.607,79.393  c-5.857-5.857-15.355-5.858-21.213,0.001c-5.858,5.858-5.858,15.355,0,21.213l150.004,150c2.813,2.813,6.628,4.393,10.606,4.393  s7.794-1.581,10.606-4.394l149.996-150C331.465,94.749,331.465,85.251,325.607,79.393z"
+            />
+          </svg>
+        </button>
+        {currentWeather && currentWeatherShown && (
           <>
             <div className="weather__currentResults">
               {/* have something conditionally render based on weather result */}
-              {currentWeather.weather_code === "1" ? (
+              {currentWeather.weather_code === "0" ||
+              currentWeather.weather_code === "1" ? (
                 <img
                   className="weather_icon_current"
                   src="/weather_icons/sun.png"
                 />
               ) : Number(currentWeather.weather_code) >= 2 &&
-                Number(currentWeather.weather_code <= 8) ? (
+                Number(currentWeather.weather_code <= 45) ? (
                 <img
                   className="weather_icon_current"
                   src="/weather_icons/cloud_sun.png"
                 />
-              ) : Number(currentWeather.weather_code) >= 9 &&
-                Number(currentWeather.weather_code <= 12) ? (
+              ) : Number(currentWeather.weather_code) >= 48 &&
+                Number(currentWeather.weather_code <= 57) ? (
                 <img
                   className="weather_icon_current"
-                  src="/weather_icons/light.png"
+                  src="/weather_icons/light_rain.png"
                 />
-              ) : Number(currentWeather.weather_code) >= 13 &&
-                Number(currentWeather.weather_code <= 18) ? (
+              ) : (Number(currentWeather.weather_code) >= 61 &&
+                  Number(currentWeather.weather_code <= 67)) ||
+                (Number(currentWeather.weather_code) >= 80 &&
+                  Number(currentWeather.weather_code <= 82)) ? (
                 <img
                   className="weather_icon_current"
                   src="/weather_icons/heavy_rain.png"
                 />
-              ) : Number(currentWeather.weather_code) >= 19 &&
-                Number(currentWeather.weather_code <= 27) ? (
+              ) : (Number(currentWeather.weather_code) >= 71 &&
+                  Number(currentWeather.weather_code <= 77)) ||
+                (Number(currentWeather.weather_code) >= 85 &&
+                  Number(currentWeather.weather_code <= 86)) ? (
                 <img
                   className="weather__icon_current"
                   src="/weather_icons/snow.png"
                 />
-              ) : Number(currentWeather.weather_code) >= 28 &&
-                Number(currentWeather.weather_code <= 30) ? (
+              ) : Number(currentWeather.weather_code) >= 95 &&
+                Number(currentWeather.weather_code <= 99) ? (
                 <img
                   className="weather__icon_current"
                   src="/weather_icons/storm.png"
@@ -167,6 +237,56 @@ function App() {
               <h3>Precipitation: {currentWeather.precipitation}mm</h3>
               <h3>Wind Speed: {currentWeather.wind_speed_10m}Km/h</h3>
             </div>
+          </>
+        )}
+        {!currentWeather && currentWeatherShown && (
+          <h1>Choose a location to start</h1>
+        )}
+      </section>
+      <section className="weather__futureResults">
+        <button
+          className="weather__results__button"
+          onClick={futureWeatherShow}
+        >
+          Next 3 days{" "}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="#000000"
+            height="20px"
+            width="20px"
+            version="1.1"
+            id="Layer_1"
+            viewBox="0 0 330 330"
+          >
+            <path
+              id="XMLID_225_"
+              d="M325.607,79.393c-5.857-5.857-15.355-5.858-21.213,0.001l-139.39,139.393L25.607,79.393  c-5.857-5.857-15.355-5.858-21.213,0.001c-5.858,5.858-5.858,15.355,0,21.213l150.004,150c2.813,2.813,6.628,4.393,10.606,4.393  s7.794-1.581,10.606-4.394l149.996-150C331.465,94.749,331.465,85.251,325.607,79.393z"
+            />
+          </svg>
+        </button>
+        {futureWeatherShown && (
+          <>
+            <button onClick={showToday}>Today</button>
+            <button onClick={showTomorrow}>Tomorrow</button>
+            <button onClick={showNextDay}>Next day</button>
+            {shownToday && (
+              <>
+                <h1>Today's weather</h1>
+                <h2>Let's see!</h2>
+              </>
+            )}
+            {shownTomorrow && (
+              <>
+                <h1>Tomorrow's weather</h1>
+                <h2>Let's see!</h2>
+              </>
+            )}
+            {shownNextDay && (
+              <>
+                <h1>Next Day's weather</h1>
+                <h2>exciting</h2>
+              </>
+            )}
           </>
         )}
       </section>
