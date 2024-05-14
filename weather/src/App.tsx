@@ -6,10 +6,12 @@ function App() {
   const [currentWeather, setCurrentWeather] = useState(null);
   const [currentWeatherShown, setCurrentWeatherShown] = useState(false);
   const [futureWeatherShown, setFutureWeatherShown] = useState(false);
-  const [shownToday, setTodayShown] = useState(false);
-  const [shownTomorrow, setShownTomorrow] = useState(false);
-  const [shownNextDay, setShownNextDay] = useState(false);
-  const [state, dispatch] = useReducer(reducer, { day: "Today" });
+  const [dailyWeather, setDailyWeather] = useState(null);
+  const [state, dispatch] = useReducer(reducer, {
+    day: "",
+    image: "",
+    Rain: "",
+  });
 
   //function to store the input when user types to the postcode
   const handleChange = (event: any) => {
@@ -22,6 +24,7 @@ function App() {
   let resultWeatherCurrent: any = {};
   let userLatitude: number = 0;
   let userLongitude: number = 0;
+  let resultWeatherDaily: any = {};
 
   let weatherCodes: { [key: string]: string } = {
     "0": "Clear sky",
@@ -67,11 +70,13 @@ function App() {
       `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,precipitation,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,rain_sum,wind_gusts_10m_max,wind_direction_10m_dominant`
     );
     resultWeather = await responseWeather.json();
-    //console.log(resultWeather);
+    // console.log("result weather " + resultWeather.daily);
     //getting current weather from resultWeather
     resultWeatherCurrent = await resultWeather.current;
-    console.log(resultWeatherCurrent);
+    //console.log(resultWeatherCurrent);
     setCurrentWeather(resultWeatherCurrent);
+    resultWeatherDaily = await resultWeather.daily;
+    setDailyWeather(resultWeatherDaily);
     return resultWeatherCurrent;
   }
 
@@ -96,11 +101,13 @@ function App() {
       `https://api.open-meteo.com/v1/forecast?latitude=${userLatitude}&longitude=${userLongitude}&current=temperature_2m,precipitation,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,rain_sum,wind_gusts_10m_max,wind_direction_10m_dominant`
     );
     resultWeather = await responseWeather.json();
-    //console.log(resultWeather);
+
     //getting current weather from resultWeather
     resultWeatherCurrent = await resultWeather.current;
-    console.log(resultWeatherCurrent);
+    //console.log(resultWeatherCurrent);
     setCurrentWeather(resultWeatherCurrent);
+    resultWeatherDaily = await resultWeather.daily;
+    setDailyWeather(resultWeather.daily);
     return resultWeatherCurrent;
   }
 
@@ -113,31 +120,30 @@ function App() {
     setFutureWeatherShown(!futureWeatherShown);
   };
 
-  const showToday = () => {
-    setTodayShown(!shownToday);
-    setShownTomorrow(false);
-    setShownNextDay(false);
-  };
-  const showTomorrow = () => {
-    setShownTomorrow(!shownTomorrow);
-    setTodayShown(false);
-    setShownNextDay(false);
-  };
-
-  const showNextDay = () => {
-    setShownTomorrow(false);
-    setTodayShown(false);
-    setShownNextDay(!shownNextDay);
-  };
   //reducer function to show the 3 days of weather on click - saves doing 100000 states...
   function reducer(state: any, action: any) {
     if (action.type === "Today weather") {
       return {
-        day: state.day,
+        day: "Today's weather",
+        image: "trial",
+        Rain: `Rain: ${dailyWeather.rain_sum[0]}mm`,
+      };
+    } else if (action.type === "Tomorrow's weather") {
+      return {
+        day: "Tomorrow's weather",
+        image: "trial2",
+        Rain: `Rain: ${dailyWeather.rain_sum[1]}mm`,
+      };
+    } else if (action.type === "Next Day's weather") {
+      return {
+        day: "Next day's weather",
+        image: "trial3",
+        Rain: `Rain: ${dailyWeather.rain_sum[2]}mm`,
       };
     }
     throw Error("Unknown action.");
   }
+  console.log(dailyWeather);
   return (
     <>
       <section className="weather__header">
@@ -277,30 +283,31 @@ function App() {
         {futureWeatherShown && (
           <>
             <button
+              className="weather__dayButton"
               onClick={() => {
                 dispatch({ type: "Today weather" });
               }}
             >
               Today
             </button>
-            <button onClick={showTomorrow}>Tomorrow</button>
-            <button onClick={showNextDay}>Next day</button>
-
-            <h1>{state.day} weather</h1>
-            <h2>Let's see!</h2>
-
-            {shownTomorrow && (
-              <>
-                <h1>Tomorrow's weather</h1>
-                <h2>Let's see!</h2>
-              </>
-            )}
-            {shownNextDay && (
-              <>
-                <h1>Next Day's weather</h1>
-                <h2>exciting</h2>
-              </>
-            )}
+            <button
+              className="weather__dayButton"
+              onClick={() => {
+                dispatch({ type: "Tomorrow's weather" });
+              }}
+            >
+              Tomorrow
+            </button>
+            <button
+              className="weather__dayButton"
+              onClick={() => {
+                dispatch({ type: "Next Day's weather" });
+              }}
+            >
+              Next day
+            </button>
+            <h1>{state.day} </h1>
+            <h2>{state.image}</h2>
           </>
         )}
       </section>

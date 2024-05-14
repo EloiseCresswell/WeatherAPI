@@ -88,3 +88,13 @@
 .weather__currentlyResults {
   margin-top: 20px;
 }
+
+.weather__dayButton {
+  font-size: 20px;
+  padding: 15px 0px;
+  width: 120px;
+  border-radius: 5px;
+  margin-left: 5px;
+  margin-top: 20px;
+  background-color: #6bcfe3;
+}
