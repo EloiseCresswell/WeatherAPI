@@ -1,20 +1,15 @@
 import "./App.css";
-import React, { useState, useReducer } from "react";
+import { useState } from "react";
 
 function App() {
   const [postcode, setPostcode] = useState("");
-  const [currentWeather, setCurrentWeather] = useState(null);
+  const [currentWeather, setCurrentWeather] = useState<any>({});
   const [currentWeatherShown, setCurrentWeatherShown] = useState(false);
-  const [futureWeatherShown, setFutureWeatherShown] = useState(false);
-  const [dailyWeather, setDailyWeather] = useState(null);
-  const [state, dispatch] = useReducer(reducer, {
-    day: "",
-    image: "",
-    Rain: "",
-  });
-  const [weatherImage, setWeatherImage] = useState(
-    "/weather_icons/cloud_sun.png"
-  );
+  // const [futureWeatherShown, setFutureWeatherShown] = useState(false);
+  // const [dailyWeather, setDailyWeather] = useState(null);
+  // const [weatherImage, setWeatherImage] = useState(
+  //   "/weather_icons/cloud_sun.png"
+  // );
 
   //function to store the input when user types to the postcode
   const handleChange = (event: any) => {
@@ -25,7 +20,7 @@ function App() {
   let resultWeatherCurrent: any = {};
   let userLatitude: number = 0;
   let userLongitude: number = 0;
-  let resultWeatherDaily: any = {};
+  // let resultWeatherDaily: any = {};
 
   let weatherCodes: { [key: string]: string } = {
     "0": "Clear sky",
@@ -76,8 +71,8 @@ function App() {
     resultWeatherCurrent = await resultWeather.current;
     //console.log(resultWeatherCurrent);
     setCurrentWeather(resultWeatherCurrent);
-    resultWeatherDaily = await resultWeather.daily;
-    setDailyWeather(resultWeatherDaily);
+    // resultWeatherDaily = await resultWeather.daily;
+    // setDailyWeather(resultWeatherDaily);
     // setWeatherImage("/weather_icons/cloud_sun.png");
     // console.log(` hello: ${dailyWeather}`);
     return resultWeatherCurrent;
@@ -109,8 +104,8 @@ function App() {
     resultWeatherCurrent = await resultWeather.current;
     //console.log(resultWeatherCurrent);
     setCurrentWeather(resultWeatherCurrent);
-    resultWeatherDaily = await resultWeather.daily;
-    setDailyWeather(resultWeather.daily);
+    // resultWeatherDaily = await resultWeather.daily;
+    // setDailyWeather(resultWeather.daily);
     return resultWeatherCurrent;
   }
 
@@ -119,40 +114,40 @@ function App() {
     setCurrentWeatherShown(!currentWeatherShown);
   };
 
-  const futureWeatherShow = () => {
-    setFutureWeatherShown(!futureWeatherShown);
-  };
+  // const futureWeatherShow = () => {
+  //   setFutureWeatherShown(!futureWeatherShown);
+  // };
 
   //reducer function to show the 3 days of weather on click - saves doing 100000 states...
-  function reducer(state: any, action: any) {
-    if (action.type === "Today weather") {
-      console.log(dailyWeather);
-      return {
-        day: "Today's weather",
-        image: { weatherImage },
-        Rain: `Rain: ${dailyWeather.rain_sum[0]}mm`,
-        Temperature: ` Max Temperature ${dailyWeather.temperature_2m_max[0]}oC`,
-        Wind_Speed: `Max Wind Gust Speed ${dailyWeather.wind_gusts_10m_max[0]}km/h`,
-      };
-    } else if (action.type === "Tomorrow's weather") {
-      return {
-        day: "Tomorrow's weather",
-        // image: "trial2",
-        Rain: `Rain: ${dailyWeather.rain_sum[1]}mm`,
-        Temperature: `Max Temperature ${dailyWeather.temperature_2m_max[1]}oC`,
-        Wind_Speed: `Max Wind Gust Speed ${dailyWeather.wind_gusts_10m_max[1]}km/h`,
-      };
-    } else if (action.type === "Next Day's weather") {
-      return {
-        day: "Next day's weather",
-        // image: "trial3",
-        Rain: `Rain: ${dailyWeather.rain_sum[2]}mm`,
-        Temperature: `Max Temperature ${dailyWeather.temperature_2m_max[2]}oC`,
-        Wind_Speed: `Max Wind Gust Speed ${dailyWeather.wind_gusts_10m_max[2]}km/h`,
-      };
-    }
-    throw Error("Unknown action.");
-  }
+  // function reducer(state: any, action: any) {
+  //   if (action.type === "Today weather") {
+  //     console.log(dailyWeather);
+  //     return {
+  //       day: "Today's weather",
+  //       image: { weatherImage },
+  //       Rain: `Rain: ${dailyWeather.rain_sum[0]}mm`,
+  //       Temperature: ` Max Temperature ${dailyWeather.temperature_2m_max[0]}oC`,
+  //       Wind_Speed: `Max Wind Gust Speed ${dailyWeather.wind_gusts_10m_max[0]}km/h`,
+  //     };
+  //   } else if (action.type === "Tomorrow's weather") {
+  //     return {
+  //       day: "Tomorrow's weather",
+  //       // image: "trial2",
+  //       Rain: `Rain: ${dailyWeather.rain_sum[1]}mm`,
+  //       Temperature: `Max Temperature ${dailyWeather.temperature_2m_max[1]}oC`,
+  //       Wind_Speed: `Max Wind Gust Speed ${dailyWeather.wind_gusts_10m_max[1]}km/h`,
+  //     };
+  //   } else if (action.type === "Next Day's weather") {
+  //     return {
+  //       day: "Next day's weather",
+  //       // image: "trial3",
+  //       Rain: `Rain: ${dailyWeather.rain_sum[2]}mm`,
+  //       Temperature: `Max Temperature ${dailyWeather.temperature_2m_max[2]}oC`,
+  //       Wind_Speed: `Max Wind Gust Speed ${dailyWeather.wind_gusts_10m_max[2]}km/h`,
+  //     };
+  //   }
+  //   throw Error("Unknown action.");
+  // }
   // console.log(dailyWeather);
   return (
     <>
