@@ -12,14 +12,15 @@ function App() {
     image: "",
     Rain: "",
   });
+  const [weatherImage, setWeatherImage] = useState(
+    "/weather_icons/cloud_sun.png"
+  );
 
   //function to store the input when user types to the postcode
   const handleChange = (event: any) => {
     // console.log(event.target.value);
     setPostcode(event.target.value);
   };
-  let latitude: string = "";
-  let longitude: string = "";
   let resultWeather: any = {};
   let resultWeatherCurrent: any = {};
   let userLatitude: number = 0;
@@ -63,8 +64,8 @@ function App() {
       `http://api.postcodes.io/postcodes/${postcode}`
     );
     const result = await response.json();
-    latitude = await result.result.latitude;
-    longitude = await result.result.longitude;
+    let latitude = await result.result.latitude;
+    let longitude = await result.result.longitude;
     //take lat and long and make the weather
     const responseWeather = await fetch(
       `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,precipitation,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,rain_sum,wind_gusts_10m_max,wind_direction_10m_dominant`
@@ -77,6 +78,8 @@ function App() {
     setCurrentWeather(resultWeatherCurrent);
     resultWeatherDaily = await resultWeather.daily;
     setDailyWeather(resultWeatherDaily);
+    // setWeatherImage("/weather_icons/cloud_sun.png");
+    // console.log(` hello: ${dailyWeather}`);
     return resultWeatherCurrent;
   }
 
@@ -123,27 +126,34 @@ function App() {
   //reducer function to show the 3 days of weather on click - saves doing 100000 states...
   function reducer(state: any, action: any) {
     if (action.type === "Today weather") {
+      console.log(dailyWeather);
       return {
         day: "Today's weather",
-        image: "trial",
+        image: { weatherImage },
         Rain: `Rain: ${dailyWeather.rain_sum[0]}mm`,
+        Temperature: ` Max Temperature ${dailyWeather.temperature_2m_max[0]}oC`,
+        Wind_Speed: `Max Wind Gust Speed ${dailyWeather.wind_gusts_10m_max[0]}km/h`,
       };
     } else if (action.type === "Tomorrow's weather") {
       return {
         day: "Tomorrow's weather",
-        image: "trial2",
+        // image: "trial2",
         Rain: `Rain: ${dailyWeather.rain_sum[1]}mm`,
+        Temperature: `Max Temperature ${dailyWeather.temperature_2m_max[1]}oC`,
+        Wind_Speed: `Max Wind Gust Speed ${dailyWeather.wind_gusts_10m_max[1]}km/h`,
       };
     } else if (action.type === "Next Day's weather") {
       return {
         day: "Next day's weather",
-        image: "trial3",
+        // image: "trial3",
         Rain: `Rain: ${dailyWeather.rain_sum[2]}mm`,
+        Temperature: `Max Temperature ${dailyWeather.temperature_2m_max[2]}oC`,
+        Wind_Speed: `Max Wind Gust Speed ${dailyWeather.wind_gusts_10m_max[2]}km/h`,
       };
     }
     throw Error("Unknown action.");
   }
-  console.log(dailyWeather);
+  // console.log(dailyWeather);
   return (
     <>
       <section className="weather__header">
@@ -260,7 +270,7 @@ function App() {
         )}
       </section>
       <section className="weather__futureResults">
-        <button
+        {/* <button
           className="weather__results__button"
           onClick={futureWeatherShow}
         >
@@ -279,8 +289,8 @@ function App() {
               d="M325.607,79.393c-5.857-5.857-15.355-5.858-21.213,0.001l-139.39,139.393L25.607,79.393  c-5.857-5.857-15.355-5.858-21.213,0.001c-5.858,5.858-5.858,15.355,0,21.213l150.004,150c2.813,2.813,6.628,4.393,10.606,4.393  s7.794-1.581,10.606-4.394l149.996-150C331.465,94.749,331.465,85.251,325.607,79.393z"
             />
           </svg>
-        </button>
-        {futureWeatherShown && (
+        </button> */}
+        {/* {futureWeatherShown && (
           <>
             <button
               className="weather__dayButton"
@@ -306,10 +316,16 @@ function App() {
             >
               Next day
             </button>
-            <h1>{state.day} </h1>
+            <h2>{state.day} </h2>
             <h2>{state.image}</h2>
+            <h2>{state.Rain}</h2>
+            <h2>{state.Temperature}</h2>
+            <h2>{state.Wind_Speed}</h2>
+            {weatherImage && (
+              <img src={state.image} height={500} width={500} alt="Image" />
+            )}
           </>
-        )}
+        )} */}
       </section>
     </>
   );

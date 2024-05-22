@@ -1,9 +1,18 @@
+@import url("https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap");
+* {
+  font-family: "Poetsen One", sans-serif;
+  font-style: normal;
+}
 .weather__header {
   width: 90vw;
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 10px auto;
+  font-family: "Poetsen One", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 1.5rem;
 }
 
 .weather__form {
@@ -75,10 +84,13 @@
 .weather__results__button {
   border: none;
   background-color: white;
-  font-size: 35px;
+  font-size: 30px;
   width: 100%;
   display: flex;
   justify-content: space-between;
+  font-family: "Poetsen One", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 .weather__futureResults {
